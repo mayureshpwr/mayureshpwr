@@ -3,6 +3,7 @@ import json, os, datetime as dt
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PALETTE = ["#161b22", "#0e4429", "#006d32", "#26a641", "#39d353", "#69f0a0"]
+ORG_COLOR = "#58a6ff"  # outline for days with commits in the configured org(s)
 BOX, GAP = 13, 3
 STEP = BOX + GAP
 LEFT, TOP = 34, 34
@@ -19,6 +20,13 @@ def main():
         data = json.load(f)
     days = data["days"]
     st = data["stats"]
+    orgs = data.get("orgs", {})
+    org_days = {}
+    for v in orgs.values():
+        for k, c in v.get("days", {}).items():
+            org_days[k] = org_days.get(k, 0) + c
+    org_label = " + ".join(orgs) if orgs else ""
+    org_total = sum(org_days.values())
     first = dt.date.fromisoformat(days[0]["date"])
     offset = (first.weekday() + 1) % 7  # Sunday = row 0
 
@@ -54,15 +62,25 @@ def main():
 
     for col, row, d, date in cells:
         lvl = level_for(d["count"], d["level"])
+        oc = org_days.get(d["date"], 0)
+        if oc:  # org work counts towards the colour too (e.g. commits GitHub didn't tally)
+            lvl = max(lvl, 1 if oc < 3 else 2 if oc < 6 else 3 if oc < 10 else 4)
         x, y = LEFT + col * STEP, TOP + row * STEP
         delay = (col + row) * 0.018
         cls = "" if STATIC else f' class="c" style="animation-delay:{delay:.3f}s"'
         title = f'{d["count"]} contributions on {date.isoformat()}'
-        o.append(f'<rect x="{x}" y="{y}" width="{BOX}" height="{BOX}" rx="3" fill="{PALETTE[lvl]}"{cls}><title>{title}</title></rect>')
+        if oc:
+            title += f" · {oc} commit{'s' if oc != 1 else ''} in {org_label}"
+        ring = f' stroke="{ORG_COLOR}" stroke-width="1.6"' if oc else ""
+        o.append(f'<rect x="{x}" y="{y}" width="{BOX}" height="{BOX}" rx="3" fill="{PALETTE[lvl]}"{ring}{cls}><title>{title}</title></rect>')
 
     # legend
     ly = TOP + 7 * STEP + 14
     lx = width - 14 - (6 * STEP) - 70
+    if org_days:
+        ox = lx - 24 - 7 * len(org_label) - 24
+        o.append(f'<rect x="{ox}" y="{ly}" width="{BOX}" height="{BOX}" rx="3" fill="{PALETTE[2]}" stroke="{ORG_COLOR}" stroke-width="1.6"/>')
+        o.append(f'<text x="{ox + BOX + 6}" y="{ly+10}">{org_label} work</text>')
     o.append(f'<text x="{lx}" y="{ly+10}">Less</text>')
     for i, c in enumerate(PALETTE):
         o.append(f'<rect x="{lx + 32 + i*STEP}" y="{ly}" width="{BOX}" height="{BOX}" rx="3" fill="{c}"/>')
@@ -71,7 +89,10 @@ def main():
     # footer stats
     fy = height - 14
     o.append(f'<text class="t" x="{LEFT}" y="{ly+10}">{st["total"]:,} contributions in the last year</text>')
-    o.append(f'<text x="{LEFT}" y="{fy}">streak {st["current_streak"]}d · longest {st["longest_streak"]}d · best day {st["best_day"]["count"]} ({st["best_day"]["date"]})</text>')
+    line = f'streak {st["current_streak"]}d · longest {st["longest_streak"]}d · best day {st["best_day"]["count"]} ({st["best_day"]["date"]})'
+    if org_days:
+        line += f' · {org_label}: {org_total} commits on {len(org_days)} days'
+    o.append(f'<text x="{LEFT}" y="{fy}">{line}</text>')
     o.append("</svg>")
 
     with open(os.path.join(ROOT, "contrib-heatmap.svg"), "w") as f:

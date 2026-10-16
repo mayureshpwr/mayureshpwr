@@ -22,6 +22,8 @@ jobs:
       - run: python scripts/fetch_contributions.py
         env:
           GH_USERNAME: ${{ github.repository_owner }}
+          # Optional: add a repo secret ORG_READ_TOKEN (PAT with repo read) to count commits in private org repos.
+          GITHUB_TOKEN: ${{ secrets.ORG_READ_TOKEN || secrets.GITHUB_TOKEN }}
       - run: python scripts/render_heatmap_svg.py
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:

@@ -16,7 +16,12 @@
 <br><br>
 
 <h3><code>mayureshpwr@github ~ $ whoami</code></h3>
-<img src="./info-card.svg" width="490" />
+<table>
+  <tr>
+    <td valign="top"><img src="./avi-ascii.svg" width="370" /></td>
+    <td valign="top"><img src="./info-card.svg" width="490" /></td>
+  </tr>
+</table>
 
 </div>
 
@@ -99,20 +104,6 @@ Tamper-proof on-chain voting system built with Solidity.
 
 ### 🚚 [Supply Chain Management](https://github.com/mayureshpwr/Supply_Chain_Management_and_Shipment_Tracking)
 Blockchain-based shipment tracking with full provenance trail.
-
----
-
-## 📊 GitHub Stats
-
-<p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=mayureshpwr&show_icons=true&theme=tokyonight&hide_border=true" alt="mayureshpwr stats" />
-</p>
-<p align="center">
-  <img src="https://github-readme-stats.vercel.app/api/top-langs?username=mayureshpwr&layout=compact&theme=tokyonight&hide_border=true" alt="top langs" />
-</p>
-<p align="center">
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=mayureshpwr&theme=tokyonight&hide_border=true" alt="streak" />
-</p>
 
 ---
 
