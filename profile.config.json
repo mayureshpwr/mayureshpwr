@@ -1,0 +1,13 @@
+{
+  "username": "mayureshpwr",
+  "handle": "mayureshpwr",
+  "title": "mayureshpwr@github",
+  "rows": [
+    ["Now", "Plugin Nexus - Web3 city-builder on XDC"],
+    ["Role", "Blockchain & Web3 engineer"],
+    ["Stack", "Solidity · Go · Node.js · Next.js"],
+    ["Infra", "XDC full nodes · RPCaaS · Kubernetes"],
+    ["Focus", "Contract security · oracles · CCIP"],
+    ["Open src", "GoPlugin ecosystem (core contributor)"]
+  ]
+}
